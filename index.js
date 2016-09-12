@@ -1,2 +1,2 @@
-var middleware = require('./metrics');
-var metrics = require('./metricsModel');
+module.exports.middleware = require('./middleware');
+module.exports.metrics = require('./metrics');

@@ -6,7 +6,6 @@ var eventLoopStats = require("event-loop-stats");
 var memwatch = require('memwatch-next');
 var schedule = require('node-schedule');
 var usage = require('pidusage');
-var metrics = {};
 var trackedMetrics = {};
 var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
@@ -27,35 +26,35 @@ var NAMESPACES = {
 
 var cpuUsageScheduleJob;
 
-metrics.getAll = function (reset) {
+module.exports.getAll = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics);
   if (reset)
     resetAll();
   return metricsAsJson;
 }
 
-metrics.processMetrics = function (reset) {
+module.exports.processMetrics = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics[NAMESPACES.process]);
   if (reset)
     resetProcessMetrics();
   return metricsAsJson;
 }
 
-metrics.apiMetrics = function (reset) {
+module.exports.apiMetrics = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics[NAMESPACES.apiMetrics]);
   if (reset)
     resetMetric(NAMESPACES.apiMetrics);
   return metricsAsJson;
 }
 
-metrics.internalMetrics = function (reset) {
+module.exports.internalMetrics = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics[NAMESPACES.internalMetrics]);
   if (reset)
     resetMetric(NAMESPACES.internalMetrics);
   return metricsAsJson;
 }
 
-metrics.logInternalMetric = function (info, err) {
+module.exports.logInternalMetric = function (info, err) {
   var status = "success";
 
   if (err) {
@@ -70,7 +69,7 @@ metrics.logInternalMetric = function (info, err) {
   });
 }
 
-metrics.addApiData = function (message) {
+module.exports.addApiData = function (message) {
   var metricName = getMetricName(message.route, message.method);
   // var path = message.route ? message.route.path : undefined;
 
@@ -206,5 +205,3 @@ function resetMetric(namespaceToReset) {
 }
 
 addProcessMetrics();
-
-module.exports = metrics;
