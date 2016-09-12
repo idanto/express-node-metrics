@@ -17,7 +17,6 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "istanbul": "^0.4.5",
-    "measured": "^1.1.0",
     "mocha": "^3.0.2",
     "mochawesome": "^1.5.2",
     "node-mocks-http": "^1.5.3",
@@ -29,6 +28,7 @@
     "event-loop-stats": "^1.0.0",
     "memwatch-next": "^0.3.0",
     "node-schedule": "^1.1.1",
-    "pidusage": "^1.0.7"
+    "pidusage": "^1.0.7",
+    "measured": "^1.1.0"
   }
 }
