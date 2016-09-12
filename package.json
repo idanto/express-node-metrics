@@ -26,9 +26,10 @@
   },
   "dependencies": {
     "event-loop-stats": "^1.0.0",
+    "gc-stats": "^1.0.0",
+    "measured": "^1.1.0",
     "memwatch-next": "^0.3.0",
     "node-schedule": "^1.1.1",
-    "pidusage": "^1.0.7",
-    "measured": "^1.1.0"
+    "pidusage": "^1.0.7"
   }
 }
