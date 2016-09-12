@@ -1,0 +1,13 @@
+{
+  "globalDevDependencies": {
+    "chai": "registry:dt/chai#3.4.0+20160601211834",
+    "istanbul": "registry:dt/istanbul#0.4.0+20160316155526",
+    "mocha": "registry:dt/mocha#2.2.5+20160720003353",
+    "rewire": "registry:dt/rewire#2.5.1+20160317120654",
+    "sinon": "registry:dt/sinon#1.16.0+20160517064723",
+    "sleep": "registry:dt/sleep#0.0.0+20160728152313"
+  },
+  "globalDependencies": {
+    "node-schedule": "registry:dt/node-schedule#1.1.0+20160521153413"
+  }
+}
