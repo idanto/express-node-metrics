@@ -1,5 +1,5 @@
 {
-  "name": "node-metrics",
+  "name": "express-node-metrics",
   "version": "0.1.0",
   "description": "metrics for node+express application",
   "main": "index.js",
