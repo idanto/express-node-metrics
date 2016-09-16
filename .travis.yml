@@ -10,5 +10,5 @@ addons:
     packages:
       - g++-4.8
 script: "npm run-script test-travis"
-# after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
-after_success: 'npm run coveralls'
+after_script: "npm install coveralls@2 && cat ./coverage/lcov.info | coveralls"
+# after_success: 'npm run coveralls'
