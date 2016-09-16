@@ -68,10 +68,10 @@ module.exports = router;
 
 [npm-image]: https://img.shields.io/npm/v/express-node-metrics.svg?style=flat
 [npm-url]: https://npmjs.org/package/express-node-metrics
-[travis-image]: https://img.shields.io/travis/idanto/express-node-metrics.svg?style=flat
-[travis-url]: https://travis-ci.org/idanto/node-metrics.svg?branch=master
-[coveralls-image]: https://img.shields.io/coveralls/idanto/express-node-metrics.svg?style=flat
-[coveralls-url]: https://coveralls.io/r/idanto/express-node-metrics?branch=master
+[travis-image]: https://travis-ci.org/idanto/node-metrics.svg?branch=master
+[travis-url]: https://travis-ci.org/idanto/node-metrics
+[coveralls-image]: https://coveralls.io/repos/github/idanto/node-metrics/badge.svg?branch=master
+[coveralls-url]: https://coveralls.io/github/idanto/node-metrics?branch=master
 [downloads-image]: http://img.shields.io/npm/dm/express-node-metrics.svg?style=flat
 [downloads-url]: https://npmjs.org/package/express-node-metrics
 [license-image]: http://img.shields.io/badge/license-MIT-blue.svg?style=flat
