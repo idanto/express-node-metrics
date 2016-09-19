@@ -1,6 +1,4 @@
-# node-metrics
-metrics for node+express application
-
+# express-node-metrics
 [![NPM](https://nodei.co/npm/express-node-metrics.png)](https://nodei.co/npm/express-node-metrics/)
 
 [![NPM](https://nodei.co/npm-dl/express-node-metrics.png?height=3)](https://nodei.co/npm/express-node-metrics/)
@@ -10,6 +8,8 @@ metrics for node+express application
 [![Build Status][travis-image]][travis-url]
 [![Test Coverage][coveralls-image]][coveralls-url]
 [![MIT License][license-image]][license-url]
+
+This package is a platform for collecting metrics of node and express application.
 
 # Table of Contents 
 <!-- generated with [DocToc](https://github.com/thlorenz/doctoc) -->
@@ -177,6 +177,7 @@ examlpe:
 
 ### express_node_metrics.metrics.apiMetrics(reset)
 
+Retrieve all the API metrics that was aggregate until the execution point.ß
 
 When execute with `reset=true` after retrieving the metrics all the logged data will be reset.
 
@@ -189,11 +190,261 @@ When execute with `reset=true` after retrieving the metrics all the logged data 
 * `metrics` (**required**) &ndash; an Object representing the API metrics that was aggregated by now.
 examlpe:
 ```json
+{  
+   "global":{  
+      "all":{  
+         "meter":{  
+            "mean":0.011279328252622596,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":65,
+            "max":65,
+            "sum":65,
+            "variance":null,
+            "mean":65,
+            "stddev":0,
+            "count":1,
+            "median":65,
+            "p75":65,
+            "p95":65,
+            "p99":65,
+            "p999":65
+         }
+      }
+   },
+   "statuses":{  
+      "200":{  
+         "meter":{  
+            "mean":0.011279345891387335,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":65,
+            "max":65,
+            "sum":65,
+            "variance":null,
+            "mean":65,
+            "stddev":0,
+            "count":1,
+            "median":65,
+            "p75":65,
+            "p95":65,
+            "p99":65,
+            "p999":65
+         }
+      },
+      "201":{  
+         "meter":{  
+            "mean":0.0126722535655588,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004979685410881516,
+            "5MinuteRate":0.0026177566530753717,
+            "15MinuteRate":0.001025116480975725
+         },
+         "histogram":{  
+            "min":83,
+            "max":83,
+            "sum":83,
+            "variance":null,
+            "mean":83,
+            "stddev":0,
+            "count":1,
+            "median":83,
+            "p75":83,
+            "p95":83,
+            "p99":83,
+            "p999":83
+         }
+      },
+      "400":{  
+         "meter":{  
+            "mean":0.011391758628706297,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":6,
+            "max":6,
+            "sum":6,
+            "variance":null,
+            "mean":6,
+            "stddev":0,
+            "count":1,
+            "median":6,
+            "p75":6,
+            "p95":6,
+            "p99":6,
+            "p999":6
+         }
+      }
+   },
+   "methods":{  
+      "POST":{  
+         "meter":{  
+            "mean":0.011279259654897822,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":65,
+            "max":65,
+            "sum":65,
+            "variance":null,
+            "mean":65,
+            "stddev":0,
+            "count":1,
+            "median":65,
+            "p75":65,
+            "p95":65,
+            "p99":65,
+            "p999":65
+         }
+      },
+      "GET":{  
+         "meter":{  
+            "mean":0.014505734939935762,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.005882803212940022,
+            "5MinuteRate":0.0027064858119822763,
+            "15MinuteRate":0.0010365701779111729
+         },
+         "histogram":{  
+            "min":17,
+            "max":17,
+            "sum":17,
+            "variance":null,
+            "mean":17,
+            "stddev":0,
+            "count":1,
+            "median":17,
+            "p75":17,
+            "p95":17,
+            "p99":17,
+            "p999":17
+         }
+      },
+      "PATCH":{  
+         "meter":{  
+            "mean":0.03726150471483867,
+            "count":1,
+            "currentRate":0.037261503188937346,
+            "1MinuteRate":0.011458136074669108,
+            "5MinuteRate":0.0030925140804589166,
+            "15MinuteRate":0.001083679073650417
+         },
+         "histogram":{  
+            "min":13,
+            "max":13,
+            "sum":13,
+            "variance":null,
+            "mean":13,
+            "stddev":0,
+            "count":1,
+            "median":13,
+            "p75":13,
+            "p95":13,
+            "p99":13,
+            "p999":13
+         }
+      }
+   },
+   "endpoints":{  
+      "/v1/applications/authenticate|post":{  
+         "meter":{  
+            "mean":0.01127925238596365,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":65,
+            "max":65,
+            "sum":65,
+            "variance":null,
+            "mean":65,
+            "stddev":0,
+            "count":1,
+            "median":65,
+            "p75":65,
+            "p95":65,
+            "p99":65,
+            "p999":65
+         }
+      },
+      "/authenticate|post":{  
+         "meter":{  
+            "mean":0.011360091853355533,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":22,
+            "max":22,
+            "sum":22,
+            "variance":null,
+            "mean":22,
+            "stddev":0,
+            "count":1,
+            "median":22,
+            "p75":22,
+            "p95":22,
+            "p99":22,
+            "p999":22
+         }
+      },
+      "/v1/applications/|post":{  
+         "meter":{  
+            "mean":0.012672079014021197,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004979685410881516,
+            "5MinuteRate":0.0026177566530753717,
+            "15MinuteRate":0.001025116480975725
+         },
+         "histogram":{  
+            "min":83,
+            "max":83,
+            "sum":83,
+            "variance":null,
+            "mean":83,
+            "stddev":0,
+            "count":1,
+            "median":83,
+            "p75":83,
+            "p95":83,
+            "p99":83,
+            "p999":83
+         }
+      }
+   }
+}
 ```
 
 ### express_node_metrics.metrics.internalMetrics(reset)
 
-Retrieve all the internal metrics that was aggregate untill the execution point.
+Retrieve all the internal metrics that was aggregate until the execution point.
 
 When execute with `reset=true` after retrieving the metrics all the logged data will be reset.
 
@@ -206,110 +457,110 @@ When execute with `reset=true` after retrieving the metrics all the logged data 
 * `metrics` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page.
 Examlpe:
 ```json
-   "kafka":{  
-      "global":{  
-         "all":{  
-            "meter":{  
-               "mean":0.011275864297885328,
-               "count":1,
-               "currentRate":0,
-               "1MinuteRate":0.004215212696015611,
-               "5MinuteRate":0.002531936381998388,
-               "15MinuteRate":0.001013789342932559
-            },
-            "histogram":{  
-               "min":38,
-               "max":38,
-               "sum":38,
-               "variance":null,
-               "mean":38,
-               "stddev":0,
-               "count":1,
-               "median":38,
-               "p75":38,
-               "p95":38,
-               "p99":38,
-               "p999":38
-            }
-         }
-      },
-      "statuses":{  
-         "success":{  
-            "meter":{  
-               "mean":0.011275889368290304,
-               "count":1,
-               "currentRate":0,
-               "1MinuteRate":0.004215212696015611,
-               "5MinuteRate":0.002531936381998388,
-               "15MinuteRate":0.001013789342932559
-            },
-            "histogram":{  
-               "min":38,
-               "max":38,
-               "sum":38,
-               "variance":null,
-               "mean":38,
-               "stddev":0,
-               "count":1,
-               "median":38,
-               "p75":38,
-               "p95":38,
-               "p99":38,
-               "p999":38
-            }
-         }
-      },
-      "methods":{  
-         "auditRequest":{  
-            "meter":{  
-               "mean":0.011275899122149878,
-               "count":1,
-               "currentRate":0,
-               "1MinuteRate":0.004215212696015611,
-               "5MinuteRate":0.002531936381998388,
-               "15MinuteRate":0.001013789342932559
-            },
-            "histogram":{  
-               "min":38,
-               "max":38,
-               "sum":38,
-               "variance":null,
-               "mean":38,
-               "stddev":0,
-               "count":1,
-               "median":38,
-               "p75":38,
-               "p95":38,
-               "p99":38,
-               "p999":38
-            }
+{  
+   "global":{  
+      "all":{  
+         "meter":{  
+            "mean":0.011275864297885328,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
          },
-         "auditResponse":{  
-            "meter":{  
-               "mean":0.011280750820217424,
-               "count":1,
-               "currentRate":0,
-               "1MinuteRate":0.004215212696015611,
-               "5MinuteRate":0.002531936381998388,
-               "15MinuteRate":0.001013789342932559
-            },
-            "histogram":{  
-               "min":9,
-               "max":9,
-               "sum":9,
-               "variance":null,
-               "mean":9,
-               "stddev":0,
-               "count":1,
-               "median":9,
-               "p75":9,
-               "p95":9,
-               "p99":9,
-               "p999":9
-            }
+         "histogram":{  
+            "min":38,
+            "max":38,
+            "sum":38,
+            "variance":null,
+            "mean":38,
+            "stddev":0,
+            "count":1,
+            "median":38,
+            "p75":38,
+            "p95":38,
+            "p99":38,
+            "p999":38
+         }
+      }
+   },
+   "statuses":{  
+      "success":{  
+         "meter":{  
+            "mean":0.011275889368290304,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":38,
+            "max":38,
+            "sum":38,
+            "variance":null,
+            "mean":38,
+            "stddev":0,
+            "count":1,
+            "median":38,
+            "p75":38,
+            "p95":38,
+            "p99":38,
+            "p999":38
+         }
+      }
+   },
+   "methods":{  
+      "auditRequest":{  
+         "meter":{  
+            "mean":0.011275899122149878,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":38,
+            "max":38,
+            "sum":38,
+            "variance":null,
+            "mean":38,
+            "stddev":0,
+            "count":1,
+            "median":38,
+            "p75":38,
+            "p95":38,
+            "p99":38,
+            "p999":38
+         }
+      },
+      "auditResponse":{  
+         "meter":{  
+            "mean":0.011280750820217424,
+            "count":1,
+            "currentRate":0,
+            "1MinuteRate":0.004215212696015611,
+            "5MinuteRate":0.002531936381998388,
+            "15MinuteRate":0.001013789342932559
+         },
+         "histogram":{  
+            "min":9,
+            "max":9,
+            "sum":9,
+            "variance":null,
+            "mean":9,
+            "stddev":0,
+            "count":1,
+            "median":9,
+            "p75":9,
+            "p95":9,
+            "p99":9,
+            "p999":9
          }
       }
    }
+}
 ```
 ### express_node_metrics.metrics.addApiData(info)
 
@@ -324,10 +575,10 @@ each and every one of the sections is [Timer metric] (https://www.npmjs.com/pack
 #### Arguments
 
 * `info` (**required**) &ndash; the info object that include all the information that needed to aggregate the data.
-    * `status` - 
-    * `method` - 
-    * `route` - 
-    * `time` - 
+    * `status` - The http status code of the response.
+    * `method` - The http method of the request.
+    * `route` - Full express route pattern.
+    * `time` - Response time of the specific request. 
 
 ### express_node_metrics.metrics.logInternalMetric(info, err)
 
@@ -343,9 +594,9 @@ When executed with `err`, it will aggregate the info as `failed` execution in th
 #### Arguments
 
 * `info` (**required**) &ndash; the request object returned from Express middleware invocation
-    * `source` - 
-    * `methodName` - 
-    * `startTime` - 
+    * `source` - The title for the metric data (for example southbound API destination).
+    * `methodName` - The method name that is measured.
+    * `startTime` - The start time of the measured method.
 * `err` &ndash; error if happened during the execution of the measured method.
 
 ## Examples
