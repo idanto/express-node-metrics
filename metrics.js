@@ -84,9 +84,9 @@ function getMetricName(route, methodName) {
 };
 
 function addInnerIO(message) {
-  updateMetric(NAMESPACES.internalMetrics + '.' + message.destenation + '.' + CATEGORIES.all, message.elapsedTime);
-  updateMetric(NAMESPACES.internalMetrics + '.' + message.destenation + '.' + CATEGORIES.statuses + '.' + message.status, message.elapsedTime);
-  updateMetric(NAMESPACES.internalMetrics + '.' + message.destenation + '.' + CATEGORIES.methods + '.' + message.method, message.elapsedTime)
+  updateMetric(NAMESPACES.internalMetrics + '.' + message.destination + '.' + CATEGORIES.all, message.elapsedTime);
+  updateMetric(NAMESPACES.internalMetrics + '.' + message.destination + '.' + CATEGORIES.statuses + '.' + message.status, message.elapsedTime);
+  updateMetric(NAMESPACES.internalMetrics + '.' + message.destination + '.' + CATEGORIES.methods + '.' + message.method, message.elapsedTime)
 }
 
 function _evtparse(eventName) {
