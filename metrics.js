@@ -62,7 +62,7 @@ module.exports.logInternalMetric = function (info, err) {
   }
 
   addInnerIO({
-    destenation: info.source,
+    destination: info.source,
     method: info.methodName,
     status: status,
     elapsedTime: Date.now() - info.startTime
