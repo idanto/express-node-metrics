@@ -1,5 +1,5 @@
 'use strict';
-var metricsModel = require('./metrics');
+var metrics = require('./metrics');
 
 /**
  * middleware for express in order to add start time and decorate the end method
@@ -21,7 +21,7 @@ module.exports = function (req, res, next) {
         end.apply(res, arguments);
 
         if (!req.originalUrl.includes('metrics')) {
-            metricsModel.addApiData({
+            metrics.addApiData({
                 route: req.baseUrl + req.route.path,
                 method: req.method,
                 status: res.statusCode,
