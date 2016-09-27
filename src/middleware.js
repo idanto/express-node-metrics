@@ -20,9 +20,14 @@ module.exports = function (req, res, next) {
         // call to original express#res.end()
         end.apply(res, arguments);
 
+        var route = req.baseUrl
+        if(req.route) {
+            route = route + req.route.path;
+        }
+
         if (!req.originalUrl.includes('metrics')) {
             metrics.addApiData({
-                route: req.baseUrl + req.route.path,
+                route: route,
                 method: req.method,
                 status: res.statusCode,
                 time: responseTime

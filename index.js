@@ -1,2 +1,2 @@
-module.exports.middleware = require('./middleware');
-module.exports.metrics = require('./metrics');
+module.exports.middleware = require('./src/middleware');
+module.exports.metrics = require('./src/metrics');

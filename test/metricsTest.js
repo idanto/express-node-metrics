@@ -4,7 +4,7 @@ var sleep = require("sleep");
 var clock = sinon.useFakeTimers();
 var should = require('chai').should();
 var rewire = require("rewire");
-var metricsModel = rewire("../metrics");
+var metricsModel = rewire("../src/metrics");
 
 describe('metricsModel tests', function () {
     var result;
