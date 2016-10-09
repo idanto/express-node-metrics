@@ -748,6 +748,7 @@ All custom metrics will be aggregated according to the passed structure.
 ### express_node_metrics.metrics.decrementCustomMetric(metricName)
 
 This API allows to decrement custom metrics - for example count all active incoming requests.
+This API can only be called after first using the incrementCustomMetric API (minimum value can be 0).
 All custom metrics will be aggregated according to the passed structure.
 
 #### Arguments

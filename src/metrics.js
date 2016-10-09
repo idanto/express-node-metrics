@@ -42,9 +42,6 @@ module.exports.incrementCustomMetric = function (metricName) {
 module.exports.decrementCustomMetric = function (metricName) {
   if (customMetrics[metricName]) {
     customMetrics[metricName] = customMetrics[metricName] - 1
-    addMetric(metricName, new measured.Gauge(function () {
-      return customMetrics[metricName];
-    }));
   }
 }
 
