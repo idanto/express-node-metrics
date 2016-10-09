@@ -9,6 +9,7 @@ var usage = require('pidusage');
 var trackedMetrics = {};
 var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
+var gcLastRun;
 
 var customMetrics = {}
 var endpointsLastResponseTime = {};
@@ -30,26 +31,30 @@ var NAMESPACES = {
 var cpuUsageScheduleJob;
 
 module.exports.incrementCustomMetric = function (metricName) {
-  if (!customMetrics[metricName]) {
-    customMetrics[metricName] = 0;
-  }
-  customMetrics[metricName] = customMetrics[metricName] + 1
-  addMetric(metricName, new measured.Gauge(function () {
-    return customMetrics[metricName];
-  }));
+  let counter = addMetric(metricName, new measured.Counter());
+  counter.inc();
 }
 
 module.exports.decrementCustomMetric = function (metricName) {
-  if (customMetrics[metricName]) {
-    customMetrics[metricName] = customMetrics[metricName] - 1
-  }
+  let counter = addMetric(metricName, new measured.Counter());
+  counter.dec();
 }
 
-module.exports.addCustomMetric = function (metricName, metricValue) {
+module.exports.addCustomGaugeMetric = function (metricName, metricValue) {
   customMetrics[metricName] = metricValue;
-  var metric = addMetric(metricName, new measured.Gauge(function () {
-    return customMetrics[metricName];
-  }));
+
+  let gaugeFunction;
+  if (typeof metricValue === 'function') {
+    gaugeFunction = function () {
+      return customMetrics[metricName]();
+    }
+  } else {
+    gaugeFunction = function () {
+      return customMetrics[metricName];
+    }
+  }
+  
+  addMetric(metricName, new measured.Gauge(gaugeFunction));
 }
 
 module.exports.getAll = function (reset) {
@@ -196,12 +201,13 @@ function addProcessMetrics() {
 
   gc.removeAllListeners('stats');
   gc.on('stats', function (stats) {
+    gcLastRun = new Date().getTime();
     updateMetric(NAMESPACES.process + ".gc.time", stats.pauseMS);
     //in bytes
     updateMetric(NAMESPACES.process + ".gc.releasedMem", stats.diff.usedHeapSize);
 
     addMetric(NAMESPACES.process + ".gc.lastRun", new measured.Gauge(function () {
-      return new Date().getTime();
+      return gcLastRun;
     }));
 
   });

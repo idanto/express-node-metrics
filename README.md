@@ -41,7 +41,7 @@ This package is a platform for collecting metrics of node and express applicatio
     - [Returned function arguments](#returned-function-arguments-4)
   - [express_node_metrics.metrics.logInternalMetric(info, err)](#express_node_metricsmetricsloginternalmetricinfo-err)
     - [Arguments](#arguments-5)
-  - [express_node_metrics.metrics.addCustomMetric(metricName, metricValue)](#express_node_metricsmetricsaddcustommetricmetricname-metricvalue)
+  - [express_node_metrics.metrics.addCustomGaugeMetric(metricName, metricValue)](#express_node_metricsmetricsaddcustomgaugemetricmetricname-metricvalue)
     - [Arguments](#arguments-6)
   - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsincrementcustommetricmetricname)
     - [Arguments](#arguments-7)
@@ -720,9 +720,9 @@ When executed with `err`, it will aggregate the info as `failed` execution in th
 
 
 
-### express_node_metrics.metrics.addCustomMetric(metricName, metricValue)
+### express_node_metrics.metrics.addCustomGaugeMetric(metricName, metricValue)
 
-This API allows to add custom metrics with specific values.
+This API allows to add custom metrics.
 All custom metrics will be aggregated according to the passed structure.
 
 #### Arguments
@@ -730,7 +730,9 @@ All custom metrics will be aggregated according to the passed structure.
 * `metricName` (**required**) &ndash; The metric name should be constructed with one of the following structures:
     * <namespace&gt;.<category&gt;.<name&gt; 
     * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
-* `metricValue` (**required**) &ndash; A numeric metric value
+* `metricValue` (**required**) &ndash; can be one of: 
+    * A numeric metric value - this can be used for example when updating a metric value on certain events
+    * A function that returns a numeric value - this can be used when wanting to set a metric that should query a certain object to get the current value (for example process.uptime())
 
 
 ### express_node_metrics.metrics.incrementCustomMetric(metricName)

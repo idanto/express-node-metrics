@@ -45,12 +45,13 @@ describe('metricsModel tests', function () {
                 time: 10
             });
 
-            metricsModel.addCustomMetric("customNamespace1.customCategory1.customMetricName1", 1);
-            metricsModel.addCustomMetric("customNamespace1.customCategory1.customMetricName2", 2);
-            metricsModel.addCustomMetric("customNamespace1.customCategory2.customMetricName1", 3);
-            metricsModel.addCustomMetric("customNamespace2.customCategory1.customMetricName1", 4);
-            metricsModel.addCustomMetric("customNamespace1.customCategory1.customMetricName1", 5);
-
+            metricsModel.addCustomGaugeMetric("customNamespace1.customCategory1.customMetricName1", 1);
+            metricsModel.addCustomGaugeMetric("customNamespace1.customCategory1.customMetricName2", 2);
+            metricsModel.addCustomGaugeMetric("customNamespace1.customCategory2.customMetricName1", 3);
+            metricsModel.addCustomGaugeMetric("customNamespace2.customCategory1.customMetricName1", 4);
+            metricsModel.addCustomGaugeMetric("customNamespace1.customCategory1.customMetricName1", 5);
+            metricsModel.addCustomGaugeMetric("customNamespace1.customCategory1.functionMetric", function () { return process.geteuid() });
+            
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
@@ -138,12 +139,14 @@ describe('metricsModel tests', function () {
                 result.should.have.deep.property("customNamespace1.customCategory2.customMetricName1");
                 result.should.have.deep.property("customNamespace2.customCategory1.customMetricName1");
                 result.should.have.deep.property("customNamespace1.customCategory1.metricToIncrement");
+                result.should.have.deep.property("customNamespace1.customCategory1.functionMetric");
 
                 result.customNamespace1.customCategory1.customMetricName1.should.equal(5);
                 result.customNamespace1.customCategory1.customMetricName2.should.equal(2);
                 result.customNamespace1.customCategory2.customMetricName1.should.equal(3);
                 result.customNamespace2.customCategory1.customMetricName1.should.equal(4);
                 result.customNamespace1.customCategory1.metricToIncrement.should.equal(3);
+                result.customNamespace1.customCategory1.functionMetric.should.equal(process.geteuid());
 
             });
 
