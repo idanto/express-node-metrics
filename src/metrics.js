@@ -1,6 +1,6 @@
 'use strict';
 var measured = require('measured');
-// var metricsCollection = measured.createCollection();
+var stats = measured.createCollection();
 var gc = (require('gc-stats'))();
 var eventLoopStats = require("event-loop-stats");
 var memwatch = require('memwatch-next');
@@ -9,7 +9,10 @@ var usage = require('pidusage');
 var trackedMetrics = {};
 var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
+var gcLastRun;
 
+var customMetrics = {}
+var endpointsLastResponseTime = {};
 
 var CATEGORIES = {
   all: 'global.all',
@@ -21,15 +24,44 @@ var CATEGORIES = {
 var NAMESPACES = {
   process: 'process',
   internalMetrics: 'internalMetrics',
-  apiMetrics: 'apiMetrics'
+  apiMetrics: 'apiMetrics',
+  endpoints: 'endpoints'
 }
 
 var cpuUsageScheduleJob;
 
+module.exports.incrementCustomMetric = function (metricName) {
+  let counter = addMetric(metricName, new measured.Counter());
+  counter.inc();
+}
+
+module.exports.decrementCustomMetric = function (metricName) {
+  let counter = addMetric(metricName, new measured.Counter());
+  counter.dec();
+}
+
+module.exports.addCustomGaugeMetric = function (metricName, metricValue) {
+  customMetrics[metricName] = metricValue;
+
+  let gaugeFunction;
+  if (typeof metricValue === 'function') {
+    gaugeFunction = function () {
+      return customMetrics[metricName]();
+    }
+  } else {
+    gaugeFunction = function () {
+      return customMetrics[metricName];
+    }
+  }
+  
+  addMetric(metricName, new measured.Gauge(gaugeFunction));
+}
+
 module.exports.getAll = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics);
-  if (reset)
+  if (reset) {
     resetAll();
+  }
   return metricsAsJson;
 }
 
@@ -44,6 +76,14 @@ module.exports.apiMetrics = function (reset) {
   var metricsAsJson = JSON.stringify(trackedMetrics[NAMESPACES.apiMetrics]);
   if (reset)
     resetMetric(NAMESPACES.apiMetrics);
+  return metricsAsJson;
+}
+
+module.exports.endPointMetrics = function (reset) {
+  var metricsAsJson = JSON.stringify(trackedMetrics[NAMESPACES.endpoints]);
+  if (reset) {
+    resetMetric(NAMESPACES.endpoints);
+  }
   return metricsAsJson;
 }
 
@@ -77,7 +117,12 @@ module.exports.addApiData = function (message) {
   updateMetric(NAMESPACES.apiMetrics + '.' + CATEGORIES.statuses + '.' + message.status, message.time);
   updateMetric(NAMESPACES.apiMetrics + '.' + CATEGORIES.methods + '.' + message.method, message.time);
   updateMetric(NAMESPACES.apiMetrics + '.' + CATEGORIES.endpoints + '.' + metricName, message.time);
-};
+  updateMetric(NAMESPACES.endpoints + '.' + metricName + '.' + message.status, message.time);
+  endpointsLastResponseTime[metricName] = message.time;
+  addMetric(NAMESPACES.endpoints + '.' + metricName + '.lastResponseTime', new measured.Gauge(function () {
+    return endpointsLastResponseTime[metricName];
+  }));
+}
 
 function getMetricName(route, methodName) {
   return route + '|' + methodName.toLowerCase();
@@ -136,7 +181,7 @@ function addMetric(eventName, metric) {
     trackedMetrics[parts.ns][parts.category][parts.name][parts.name1] = metric;
   }
 
-  if(parts.name1) {
+  if (parts.name1) {
     return trackedMetrics[parts.ns][parts.category][parts.name][parts.name1];
   }
   else {
@@ -156,9 +201,15 @@ function addProcessMetrics() {
 
   gc.removeAllListeners('stats');
   gc.on('stats', function (stats) {
+    gcLastRun = new Date().getTime();
     updateMetric(NAMESPACES.process + ".gc.time", stats.pauseMS);
     //in bytes
     updateMetric(NAMESPACES.process + ".gc.releasedMem", stats.diff.usedHeapSize);
+
+    addMetric(NAMESPACES.process + ".gc.lastRun", new measured.Gauge(function () {
+      return gcLastRun;
+    }));
+
   });
 
   addMetric(NAMESPACES.process + ".cpu.usage", new measured.Gauge(function () {
@@ -172,6 +223,11 @@ function addProcessMetrics() {
 
   addMetric(NAMESPACES.process + ".eventLoop.latency", new measured.Gauge(function () {
     return eventLoopStats.sense();
+  }));
+
+  addMetric(NAMESPACES.process + ".run.uptime", new measured.Gauge(function () {
+    //in ms
+    return process.uptime() * 1000;
   }));
 
   setCpuUsageScheduleJob();
@@ -193,6 +249,19 @@ function resetAll() {
   resetProcessMetrics();
   resetMetric(NAMESPACES.apiMetrics);
   resetMetric(NAMESPACES.internalMetrics);
+  resetMetric(NAMESPACES.endpoints);
+  resetCustomMetrics();
+
+}
+
+function resetCustomMetrics() {
+  for (var customMetricName in customMetrics) {
+    if (customMetrics.hasOwnProperty(customMetricName)) {
+      let customNamespace = customMetricName.substring(0, customMetricName.indexOf("."))
+      resetMetric(customNamespace);
+    }
+  }
+  customMetrics = {};
 }
 
 function resetProcessMetrics() {
