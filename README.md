@@ -36,8 +36,17 @@ This package is a platform for collecting metrics of node and express applicatio
     - [Arguments](#arguments-3)
     - [Returned function arguments](#returned-function-arguments-3)
   - [express_node_metrics.metrics.addApiData(info, err)](#express_node_metricsmetricsaddapidatainfo-err)
-  - [express_node_metrics.metrics.logInternalMetric(info, err)](#express_node_metricsmetricsloginternalmetricinfo-err)
+  - [express_node_metrics.metrics.endPointMetrics(reset)](#express_node_metricsmetricsendpointmetricsreset)
     - [Arguments](#arguments-4)
+    - [Returned function arguments](#returned-function-arguments-4)
+  - [express_node_metrics.metrics.logInternalMetric(info, err)](#express_node_metricsmetricsloginternalmetricinfo-err)
+    - [Arguments](#arguments-5)
+  - [express_node_metrics.metrics.addCustomMetric(metricName, metricValue)](#express_node_metricsmetricsaddcustommetricmetricname-metricvalue)
+    - [Arguments](#arguments-6)
+  - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsincrementcustommetricmetricname)
+    - [Arguments](#arguments-7)
+  - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsdecrementcustommetricmetricname)
+    - [Arguments](#arguments-8)
 - [Examples](#examples)
   - [Middleware](#middleware)
   - [Internal metrics](#internal-metrics)
@@ -68,6 +77,7 @@ This creates a new instance of `express_node_metrics`.
 
 This middleware adds start time to the request, and decorate the end method of express with a new one.
 At the new end method it add 'X-Response-Time' to the response and the response time to the API metrics using [metrics.addApiData](#express_node_metricsmetricsaddapidatainfo-err) method
+In addition it increments a metric which counts the current active incoming requests which can be found under `process.run.activeRequests`
 
 ### express_node_metrics.metrics
 Include all the method that collects and retrieves the metrics data.
@@ -83,7 +93,7 @@ When execute with reset equals `reset=true` after retrieving the metrics all the
 
 #### Returned function arguments
 
-* `metrics` (**required**) &ndash; an Object representing all of the aggregated metrics. It usually build from three different sections: process, API and internal metrics.
+* `metrics` (**required**) &ndash; an Object representing all of the aggregated metrics. It usually build from the sections: process, api metrics, internal metrics, endpoints metrics and custom metrics if exist.
 
 ### express_node_metrics.metrics.processMetrics(reset)
 
@@ -93,6 +103,7 @@ The process metrics include:
 * CPU usage - using [pidusage package] (https://www.npmjs.com/package/pidusage) 
 * GC - using [gc-stats package] (https://www.npmjs.com/package/gc-stats) 
 * Event loop latency - using [event-loop-stats package] (https://www.npmjs.com/package/event-loop-stats)
+* Process usage - process uptime [process.uptime()] and number of current active incoming requests  
 
 #### Arguments
 
@@ -103,7 +114,10 @@ The process metrics include:
 * `metrics` (**required**) &ndash; an Object representing the process metrics as describe above.
 examlpe:
 ```json
-{  
+{  "run" : {
+       "uptime" : 1090,
+       "activeRequests" : 1
+  },
    "cpu":{  
       "usage":10.220903395976991
    },
@@ -123,6 +137,7 @@ examlpe:
       }
    },
    "gc":{  
+      "lastRun" : 0,
       "time":{  
          "meter":{  
             "mean":0.010381926827711163,
@@ -455,7 +470,7 @@ When execute with `reset=true` after retrieving the metrics all the logged data 
 #### Returned function arguments
 
 * `metrics` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page.
-Examlpe:
+Example:
 ```json
 {  
    "global":{  
@@ -562,15 +577,21 @@ Examlpe:
    }
 }
 ```
+
 ### express_node_metrics.metrics.addApiData(info)
 
-Aggregate date using the `info` object in four different sections:
+Aggregate date using the `info` object in four different sections under `apiMetrics`:
 1. *global* - all the northbound API response times aggregated in one place.
 2. *statuses* - The northbound API response time aggregate by http statuses (`info.status` - implemented in the middleware using `res.statusCode`);
 3. *methods* - The northbound API response time aggregate by http methods (`info.method` - implemented in the middleware using `req.method`)
-4. *endpoints* - The northbound API response time aggregate by http statuses (`info.route` - implemented in the middleware using `req.baseUrl + req.route.path`)
+4. *endpoints* - The northbound API response time aggregate by route (`info.route` - implemented in the middleware using `req.baseUrl + req.route.path`)
 
 each and every one of the sections is [Timer metric] (https://www.npmjs.com/package/measured#timers)
+
+And additionally aggregate the northbound API response time as `endpoints metrics` in two different sections under `endpoints`:
+1. <route&gt;.<method&gt;.<status code&gt; - The northbound API response time aggregate by route, method and status code
+2. <route&gt;.<method&gt; - last response time for this endpoint
+
 
 #### Arguments
 
@@ -578,7 +599,105 @@ each and every one of the sections is [Timer metric] (https://www.npmjs.com/pack
     * `status` - The http status code of the response.
     * `method` - The http method of the request.
     * `route` - Full express route pattern.
-    * `time` - Response time of the specific request. 
+    * `time` - Response time of the specific request.
+     
+     
+### express_node_metrics.metrics.endPointMetrics(reset)
+
+Retrieve all the endpoint metrics that was aggregate until the execution point.
+
+When execute with `reset=true` after retrieving the metrics all the logged data will be reset.
+
+#### Arguments
+
+* `reset` &ndash; Boolean that indicates if to reset the internal metrics
+
+#### Returned function arguments
+
+* `metrics` (**required**) &ndash; a Number representing the total number of pages for the given query executed on the page.
+Example:     
+```json
+{
+  "\/v1\/applications\/testApp|post" : {
+    "200" : {
+      "meter" : {
+        "mean" : 548.6962422190779,
+        "15MinuteRate" : 0,
+        "1MinuteRate" : 0,
+        "count" : 2,
+        "currentRate" : 549.281991325061,
+        "5MinuteRate" : 0
+      },
+      "histogram" : {
+        "mean" : 30,
+        "p75" : 50,
+        "count" : 2,
+        "median" : 30,
+        "p95" : 50,
+        "max" : 50,
+        "p999" : 50,
+        "variance" : 800,
+        "stddev" : 28.2842712474619,
+        "p99" : 50,
+        "sum" : 60,
+        "min" : 10
+      }
+    },
+    "lastResponseTime" : 50
+  },
+  "\/v1\/applications\/testApp|get" : {
+    "200" : {
+      "meter" : {
+        "mean" : 60.44634944811282,
+        "15MinuteRate" : 0.0009751209602447366,
+        "1MinuteRate" : 0.002352236831272823,
+        "count" : 4,
+        "currentRate" : 60.44472174128836,
+        "5MinuteRate" : 0.002253124031641734
+      },
+      "histogram" : {
+        "mean" : 10,
+        "p75" : 10,
+        "count" : 4,
+        "median" : 10,
+        "p95" : 10,
+        "max" : 10,
+        "p999" : 10,
+        "variance" : 0,
+        "stddev" : 0,
+        "p99" : 10,
+        "sum" : 40,
+        "min" : 10
+      }
+    },
+    "400" : {
+      "meter" : {
+        "mean" : 196.4806772592497,
+        "15MinuteRate" : 0,
+        "1MinuteRate" : 0,
+        "count" : 1,
+        "currentRate" : 196.4981671192174,
+        "5MinuteRate" : 0
+      },
+      "histogram" : {
+        "mean" : 10,
+        "p75" : 10,
+        "count" : 1,
+        "median" : 10,
+        "p95" : 10,
+        "max" : 10,
+        "p999" : 10,
+        "variance" : null,
+        "stddev" : 0,
+        "p99" : 10,
+        "sum" : 10,
+        "min" : 10
+      }
+    },
+    "lastResponseTime" : 10
+  }
+}
+```
 
 ### express_node_metrics.metrics.logInternalMetric(info, err)
 
@@ -598,6 +717,45 @@ When executed with `err`, it will aggregate the info as `failed` execution in th
     * `methodName` - The method name that is measured.
     * `startTime` - The start time of the measured method.
 * `err` &ndash; error if happened during the execution of the measured method.
+
+
+
+### express_node_metrics.metrics.addCustomMetric(metricName, metricValue)
+
+This API allows to add custom metrics with specific values.
+All custom metrics will be aggregated according to the passed structure.
+
+#### Arguments
+
+* `metricName` (**required**) &ndash; The metric name should be constructed with one of the following structures:
+    * <namespace&gt;.<category&gt;.<name&gt; 
+    * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
+* `metricValue` (**required**) &ndash; A numeric metric value
+
+
+### express_node_metrics.metrics.incrementCustomMetric(metricName)
+
+This API allows to increment custom metrics - for example count all incoming requests.
+All custom metrics will be aggregated according to the passed structure.
+
+#### Arguments
+
+* `metricName` (**required**) &ndash; The metric name should be constructed with one of the following structures:
+    * <namespace&gt;.<category&gt;.<name&gt; 
+    * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
+    
+    
+### express_node_metrics.metrics.decrementCustomMetric(metricName)
+
+This API allows to decrement custom metrics - for example count all active incoming requests.
+All custom metrics will be aggregated according to the passed structure.
+
+#### Arguments
+
+* `metricName` (**required**) &ndash; The metric name should be constructed with one of the following structures:
+    * <namespace&gt;.<category&gt;.<name&gt; 
+    * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
+
 
 ## Examples
 ### Middleware

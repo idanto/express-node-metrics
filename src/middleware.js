@@ -10,6 +10,7 @@ var metrics = require('./metrics');
  */
 module.exports = function (req, res, next) {
     req.startTime = new Date();
+    metrics.incrementCustomMetric("process.run.activeRequests");
     // decorate response#end method from express
     var end = res.end;
     res.end = function () {
@@ -20,20 +21,26 @@ module.exports = function (req, res, next) {
         // call to original express#res.end()
         end.apply(res, arguments);
 
-        var route = req.baseUrl
-        if(req.route) {
-            route = route + req.route.path;
-        }
-
         if (!req.originalUrl.includes('metrics')) {
-            metrics.addApiData({
+            var route = req.baseUrl
+            if (req.swagger) {
+                route = req.swagger.apiPath;
+            } else if (req.route) {
+                route = route + req.route.path;
+            }
+
+            var apiData = {
                 route: route,
                 method: req.method,
                 status: res.statusCode,
                 time: responseTime
-            });
+            }
+            
+            metrics.addApiData(apiData);
         }
+
+        metrics.decrementCustomMetric("process.run.activeRequests");
     };
 
     next();
-}
+};
