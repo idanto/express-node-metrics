@@ -6,6 +6,7 @@ var eventLoopStats = require("event-loop-stats");
 var memwatch = require('memwatch-next');
 var schedule = require('node-schedule');
 var usage = require('pidusage');
+var metricsFactory = require('./factory');
 var trackedMetrics = {};
 var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
@@ -31,12 +32,12 @@ var NAMESPACES = {
 var cpuUsageScheduleJob;
 
 module.exports.incrementCustomMetric = function (metricName) {
-  let counter = addMetric(metricName, new measured.Counter());
+  let counter = addMetric(metricName, "Counter");
   counter.inc();
 }
 
 module.exports.decrementCustomMetric = function (metricName) {
-  let counter = addMetric(metricName, new measured.Counter());
+  let counter = addMetric(metricName, "Counter");
   counter.dec();
 }
 
@@ -53,8 +54,8 @@ module.exports.addCustomGaugeMetric = function (metricName, metricValue) {
       return customMetrics[metricName];
     }
   }
-  
-  addMetric(metricName, new measured.Gauge(gaugeFunction));
+
+  addMetric(metricName, "Gauge", gaugeFunction);
 }
 
 module.exports.getAll = function (reset) {
@@ -119,9 +120,13 @@ module.exports.addApiData = function (message) {
   updateMetric(NAMESPACES.apiMetrics + '.' + CATEGORIES.endpoints + '.' + metricName, message.time);
   updateMetric(NAMESPACES.endpoints + '.' + metricName + '.' + message.status, message.time);
   endpointsLastResponseTime[metricName] = message.time;
-  addMetric(NAMESPACES.endpoints + '.' + metricName + '.lastResponseTime', new measured.Gauge(function () {
+  addMetric(NAMESPACES.endpoints + '.' + metricName + '.lastResponseTime', "Gauge", apiMetric(metricName));
+}
+
+function apiMetric(metricName) {
+  return function() {
     return endpointsLastResponseTime[metricName];
-  }));
+  }
 }
 
 function getMetricName(route, methodName) {
@@ -158,7 +163,7 @@ function _evtparse(eventName) {
   }
 }
 
-function addMetric(eventName, metric) {
+function addMetric(eventName, metricType, func) {
   var parts = _evtparse(eventName);
   var metricsPath;
 
@@ -173,12 +178,12 @@ function addMetric(eventName, metric) {
       trackedMetrics[parts.ns][parts.category][parts.name] = {}
     }
     else {
-      trackedMetrics[parts.ns][parts.category][parts.name] = metric;
+      trackedMetrics[parts.ns][parts.category][parts.name] = metricsFactory.createMetric(metricType, func);
     }
   }
 
   if ((parts.name1) && (!trackedMetrics[parts.ns][parts.category][parts.name][parts.name1])) {
-    trackedMetrics[parts.ns][parts.category][parts.name][parts.name1] = metric;
+    trackedMetrics[parts.ns][parts.category][parts.name][parts.name1] = metricsFactory.createMetric(metricType, func);
   }
 
   if (parts.name1) {
@@ -190,7 +195,7 @@ function addMetric(eventName, metric) {
 }
 
 function updateMetric(name, elapsedTime) {
-  var metric = addMetric(name, new measured.Timer());
+  var metric = addMetric(name, "Timer");
   metric.update(elapsedTime);
 }
 
@@ -206,31 +211,40 @@ function addProcessMetrics() {
     //in bytes
     updateMetric(NAMESPACES.process + ".gc.releasedMem", stats.diff.usedHeapSize);
 
-    addMetric(NAMESPACES.process + ".gc.lastRun", new measured.Gauge(function () {
-      return gcLastRun;
-    }));
-
+    addMetric(NAMESPACES.process + ".gc.lastRun", "Gauge", gcLastRunMetric);
   });
 
-  addMetric(NAMESPACES.process + ".cpu.usage", new measured.Gauge(function () {
-    return cpuUsage;
-  }))
+  addMetric(NAMESPACES.process + ".cpu.usage", "Gauge", cpuUsageMetric)
 
-  addMetric(NAMESPACES.process + ".memory.usage", new measured.Gauge(function () {
-    //in bytes
-    return process.memoryUsage();
-  }));
+  addMetric(NAMESPACES.process + ".memory.usage", "Gauge", memoryUsageMetric);
 
-  addMetric(NAMESPACES.process + ".eventLoop.latency", new measured.Gauge(function () {
-    return eventLoopStats.sense();
-  }));
+  addMetric(NAMESPACES.process + ".eventLoop.latency", "Gauge", eventLoopLatencyMetric);
 
-  addMetric(NAMESPACES.process + ".run.uptime", new measured.Gauge(function () {
-    //in ms
-    return process.uptime() * 1000;
-  }));
+  addMetric(NAMESPACES.process + ".run.uptime", "Gauge", processUpTimeMetric);
 
   setCpuUsageScheduleJob();
+}
+
+function processUpTimeMetric() {
+  //in ms
+  return process.uptime() * 1000;
+}
+
+function eventLoopLatencyMetric() {
+  return eventLoopStats.sense();
+}
+
+function memoryUsageMetric() {
+  //in bytes
+  return process.memoryUsage();
+}
+
+function cpuUsageMetric() {
+  return cpuUsage;
+}
+
+function gcLastRunMetric() {
+  return gcLastRun;
 }
 
 function setCpuUsageScheduleJob() {
