@@ -200,9 +200,9 @@ function updateMetric(name, elapsedTime) {
 }
 
 function addProcessMetrics() {
-  // memwatch.on('leak', function (info) {
-  //   trackedMetrics[NAMESPACES.process]["memory"]["leak"] = info;
-  // });
+  memwatch.on('leak', function (info) {
+    trackedMetrics[NAMESPACES.process]["memory"]["leak"] = info;
+  });
 
   gc.removeAllListeners('stats');
   gc.on('stats', function (stats) {
@@ -284,7 +284,7 @@ function resetProcessMetrics() {
 }
 
 function resetMetric(namespaceToReset) {
-  trackedMetrics[namespaceToReset] = null;
+  delete trackedMetrics[namespaceToReset];
 }
 
 addProcessMetrics();
