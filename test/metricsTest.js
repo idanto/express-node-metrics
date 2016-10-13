@@ -6,7 +6,7 @@ var should = require('chai').should();
 var rewire = require("rewire");
 var metricsModel = rewire("../src/metrics");
 
-describe('metricsModel tests', function () {
+describe('metrics tests', function () {
     var result;
     after(function () {
         clock.restore();
