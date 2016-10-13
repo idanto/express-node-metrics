@@ -208,8 +208,8 @@ function addProcessMetrics() {
   gc.on('stats', function (stats) {
     gcLastRun = new Date().getTime();
     updateMetric(NAMESPACES.process + ".gc.time", stats.pauseMS);
-    //in Mb
-    updateMetric(NAMESPACES.process + ".gc.releasedMem", stats.diff.usedHeapSize / 1000000);
+    //in bytes
+    updateMetric(NAMESPACES.process + ".gc.releasedMem", stats.diff.usedHeapSize);
 
     addMetric(NAMESPACES.process + ".gc.lastRun", "Gauge", gcLastRunMetric);
   });
@@ -235,8 +235,8 @@ function eventLoopLatencyMetric() {
 }
 
 function memoryUsageMetric() {
-  //in Mb
-  return process.memoryUsage() / 1000000;
+  //in bytes
+  return process.memoryUsage();
 }
 
 function cpuUsageMetric() {
