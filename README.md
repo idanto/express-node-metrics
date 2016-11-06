@@ -825,8 +825,8 @@ npm test
 
 [npm-image]: https://img.shields.io/npm/v/express-node-metrics.svg?style=flat
 [npm-url]: https://npmjs.org/package/express-node-metrics
-[travis-image]: https://travis-ci.org/idanto/node-metrics.svg?branch=master
-[travis-url]: https://travis-ci.org/idanto/node-metrics
+[travis-image]: https://travis-ci.org/idanto/express-node-metrics.svg?branch=master
+[travis-url]: https://travis-ci.org/idanto/express-node-metrics
 [coveralls-image]: https://coveralls.io/repos/github/idanto/node-metrics/badge.svg?branch=master
 [coveralls-url]: https://coveralls.io/github/idanto/node-metrics?branch=master
 [downloads-image]: http://img.shields.io/npm/dm/express-node-metrics.svg?style=flat
