@@ -200,6 +200,7 @@ function updateMetric(name, elapsedTime) {
 }
 
 function addProcessMetrics() {
+  memwatch.removeAllListeners('leak');
   memwatch.on('leak', function (info) {
     trackedMetrics[NAMESPACES.process]["memory"]["leak"] = info;
   });
