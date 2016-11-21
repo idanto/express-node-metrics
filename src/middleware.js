@@ -1,5 +1,6 @@
 'use strict';
-var metrics = require('./metrics');
+var metrics = require('./metrics'),
+    helper = require('./helper');
 
 /**
  * middleware for express in order to add start time and decorate the end method
@@ -16,18 +17,19 @@ module.exports = function (req, res, next) {
     res.end = function () {
         var responseTime = new Date() - req.startTime
 
-        res.setHeader('X-Response-Time', responseTime + 'ms');
+        try {
+            res.setHeader('X-Response-Time', responseTime + 'ms');
+        } catch(error){
+            // This Try/Catch was added to handle error "Can't set headers after they are sent.” 
+            // which is thrown when using Restify  
+            // TODO: Log error
+        }
 
         // call to original express#res.end()
         end.apply(res, arguments);
 
-        if (!req.originalUrl.includes('metrics')) {
-            var route = req.baseUrl
-            if (req.swagger) {
-                route = req.swagger.apiPath;
-            } else if (req.route) {
-                route = route + req.route.path;
-            }
+        if (!helper.shouldAddMetrics(req)){
+            var route = helper.getRoute(req);
 
             var apiData = {
                 route: route,
