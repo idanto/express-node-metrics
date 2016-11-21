@@ -13,7 +13,6 @@
 This package is a platform for collecting metrics of node and express application.
 
 **Supports Restify framework from version 1.3.0 and above**
-
 # Table of Contents 
 <!-- generated with [DocToc](https://github.com/thlorenz/doctoc) -->
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
