@@ -20,7 +20,8 @@
   "keywords": [
     "metrics",
     "node",
-    "express"
+    "express",
+    "restify"
   ],
   "author": "Idan Tovi",
   "license": "MIT",
