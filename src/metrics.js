@@ -124,7 +124,7 @@ module.exports.addApiData = function (message) {
 }
 
 function apiMetric(metricName) {
-  return function() {
+  return function () {
     return endpointsLastResponseTime[metricName];
   }
 }
@@ -204,7 +204,6 @@ function addProcessMetrics() {
     trackedMetrics[NAMESPACES.process]["memory"]["leak"] = info;
   });
 
-  gc.removeAllListeners('stats');
   gc.on('stats', function (stats) {
     gcLastRun = new Date().getTime();
     updateMetric(NAMESPACES.process + ".gc.time", stats.pauseMS);
@@ -279,6 +278,8 @@ function resetCustomMetrics() {
 }
 
 function resetProcessMetrics() {
+  memwatch.removeAllListeners('leak');
+  gc.removeAllListeners('stats');
   resetMetric(NAMESPACES.process);
   addProcessMetrics();
 }
