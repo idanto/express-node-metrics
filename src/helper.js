@@ -1,13 +1,13 @@
 module.exports.getRoute = function(req){
     var route = '';
-    if (req.baseUrl){
+    if (req.baseUrl){ //express
         var route = req.baseUrl
         if (req.swagger) {
             route = req.swagger.apiPath;
         } else if (req.route) {
             route = route + req.route.path;
         }  
-    } else {
+    } else { //restify
         route = req.url;
         if (req.route){
             route = req.route.path
