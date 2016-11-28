@@ -1,15 +1,12 @@
-module.exports.getRoute = function(req){
-    var route = '';
-    if (req.baseUrl){ //express
-        var route = req.baseUrl
-        if (req.swagger) {
-            route = req.swagger.apiPath;
-        } else if (req.route) {
-            route = route + req.route.path;
-        }  
-    } else { //restify
+module.exports.getRoute = function (req) {
+    var route = req.baseUrl; //express
+    if (req.swagger) { //swagger
+        route = req.swagger.apiPath;
+    } else if (req.route && route) { //express
+        route = route + req.route.path;
+    } else if (req.url && !route) { //restify
         route = req.url;
-        if (req.route){
+        if (req.route) { 
             route = req.route.path
         }
     }
@@ -17,13 +14,13 @@ module.exports.getRoute = function(req){
     return route;
 };
 
-module.exports.shouldAddMetrics = function(req){
+module.exports.shouldAddMetrics = function (req) {
     var should = false;
-    if (req.originalUrl){
+    if (req.originalUrl) {
         should = req.originalUrl.includes('metrics');
     }
 
-    if (req.url){
+    if (req.url) {
         should = req.url.includes('metrics');
     }
 
