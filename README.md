@@ -48,6 +48,7 @@ This package is a platform for collecting metrics of node and express applicatio
     - [Arguments](#arguments-7)
   - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsdecrementcustommetricmetricname)
     - [Arguments](#arguments-8)
+- [How to Use With Docker](#how-to-use-with-docker)
 - [Examples](#examples)
   - [Middleware](#middleware)
   - [Internal metrics](#internal-metrics)
@@ -761,8 +762,37 @@ All custom metrics will be aggregated according to the passed structure.
     * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
 
 
+## How to Use With Docker
+In order to use the package inside docker you should add node-gyp installation before 'npm insall' command:
+``` dockerfile
+RUN apk update && \
+    # Install node-gyp dependencies
+    apk add --no-cache make gcc g++ python && \
+    # npm install
+    npm install --production --silent && \
+    # Uninstall node-gyp dependencies
+    apk del make gcc g++ python
+``` 
+
+If you want to use your own fork while you waiting to accept merge request you need to also add git installation commands:
+```dockerfile
+RUN apk update && \
+    # Install git
+    apk add --no-cache bash git openssh && \
+    # Install node-gyp dependencies
+    apk add --no-cache make gcc g++ python && \
+    # npm install
+    npm install --production --silent && \
+    # Uninstall git
+    apk del bash git openssh && \
+    # Uninstall node-gyp dependencies
+    apk del make gcc g++ python
+```
+
+
 ## Examples
 ### Middleware
+#### Express
 ```js
 var metricsMiddleware = require('express-node-metrics').middleware;
 app.use(metricsMiddleware);
@@ -771,6 +801,63 @@ app.get('/users', function(req, res, next) {
     //Do Something
 })
 app.listen(3000);
+```
+
+#### Swagger-Express
+```js
+// swaggerRouter configuration
+var options = {
+  controllers: './test/swaggerTest/controllers',
+  useStubs: false
+};
+
+// The Swagger document (require it, build it programmatically, fetch it from a URL, ...)
+var spec = fs.readFileSync('./test/swaggerTest/api/swagger.yaml', 'utf8');
+var swaggerDoc = jsyaml.safeLoad(spec);
+
+// Initialize the Swagger middleware
+swaggerTools.initializeMiddleware(swaggerDoc, function (middleware) {
+  
+  // Interpret Swagger resources and attach metadata to request - must be first in swagger-tools middleware chain
+  app.use(middleware.swaggerMetadata());
+
+  app.use(metricsMiddleware);
+
+  // Validate Swagger requests
+  app.use(middleware.swaggerValidator());
+
+  // Route validated requests to appropriate controller
+  app.use(middleware.swaggerRouter(options));
+
+  // Serve the Swagger documents and Swagger UI
+  app.use(middleware.swaggerUi());
+
+  // Start the server
+  http.createServer(app).listen(serverPort, function () {
+    console.log('Your server is listening on port %d (http://localhost:%d)', serverPort, serverPort);
+    console.log('Swagger-ui is available on http://localhost:%d/docs', serverPort);
+  });
+});
+```
+
+#### Restify
+```js
+var server = restify.createServer({
+    name: 'Hello World'
+});
+server.use(metricsMiddleware);
+server.use(restify.queryParser({ mapParams: true }));
+server.use(restify.bodyParser({ mapParams: true }));
+server.get('/hello/:user', function (req, res, next) {
+    res.send('hello world');
+});
+server.get('/hello', function (req, res, next) {
+    res.send('hello world');
+});
+
+server.listen(serverPort, function () {
+    console.log('%s listening at %s', server.name, server.url);
+});
 ```
 
 ### Internal metrics
