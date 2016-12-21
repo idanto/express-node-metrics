@@ -4,6 +4,7 @@
 
 # VS Code
 launch.json
+.vscode
 
 # Logs
 logs
