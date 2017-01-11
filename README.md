@@ -768,9 +768,8 @@ All custom metrics will be aggregated according to the passed structure.
 This API allows to add a custom Meter metric - things that are measured as events / interval.
 
 The structure is:
-
 * mean: The average rate since the meter was started/ last reset.
-* count: Caount of values added to the meter since was started/ last reset.
+* count: Count of values added to the meter since was started/ last reset.
 * currentRate: The rate of the meter since the last reset.
 * 1MinuteRate: The rate of the meter biased towards the last 1 minute.
 * 5MinuteRate: The rate of the meter biased towards the last 5 minutes.
