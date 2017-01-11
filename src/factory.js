@@ -11,6 +11,10 @@ module.exports.createMetric = function (name, func) {
             {
                 return new measured.Counter();
             }
+        case "meter":
+        {
+            return new measured.Meter();
+        }
         case "gauge":
             if (func) {
                 return new measured.Gauge(func);

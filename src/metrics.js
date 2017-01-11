@@ -12,7 +12,8 @@ var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
 var gcLastRun;
 
-var customMetrics = {}
+var customMetrics = {};
+var customMetersMetrics = new Set();
 var endpointsLastResponseTime = {};
 
 var CATEGORIES = {
@@ -56,6 +57,12 @@ module.exports.addCustomGaugeMetric = function (metricName, metricValue) {
   }
 
   addMetric(metricName, "Gauge", gaugeFunction);
+}
+
+module.exports.customMeterMetric = function (metricName) {
+  customMetersMetrics.add(metricName);
+  let meter = addMetric(metricName, "Meter");
+  meter.mark();
 }
 
 module.exports.getAll = function (reset) {
@@ -264,17 +271,25 @@ function resetAll() {
   resetMetric(NAMESPACES.internalMetrics);
   resetMetric(NAMESPACES.endpoints);
   resetCustomMetrics();
+  resetCustomMetersMetrics();
 
 }
 
 function resetCustomMetrics() {
   for (var customMetricName in customMetrics) {
     if (customMetrics.hasOwnProperty(customMetricName)) {
-      let customNamespace = customMetricName.substring(0, customMetricName.indexOf("."))
+      let customNamespace = customMetricName.substring(0, customMetricName.indexOf("."));
       resetMetric(customNamespace);
     }
   }
   customMetrics = {};
+}
+
+function resetCustomMetersMetrics() {
+  for (var customMetricName of customMetersMetrics) {
+    var metric = addMetric(customMetricName);
+    metric.reset();
+  }
 }
 
 function resetProcessMetrics() {
