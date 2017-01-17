@@ -56,8 +56,8 @@ describe('metrics tests', function () {
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
 
-            metricsModel.customMeterMetric("customNamespace3.customCategory1.customMeter");
-            metricsModel.customMeterMetric("customNamespace3.customCategory1.customMeter");
+            metricsModel.addCustomMeterMetric("customNamespace3.customCategory1.customMeter");
+            metricsModel.addCustomMeterMetric("customNamespace3.customCategory1.customMeter");
 
             metricsModel.__get__("memwatch").emit("leak", { test1: 1, test2: 2 });
         });
@@ -257,15 +257,13 @@ describe('metrics tests', function () {
             it('should not have custom metrics', function () {
                 resultAfterReset.should.not.have.property("customNamespace1");
                 resultAfterReset.should.not.have.property("customNamespace2");
-                resultAfterReset.should.have.property("customNamespace3");
+                resultAfterReset.should.not.have.property("customNamespace3");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.customMetricName2");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory2.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace2.customCategory1.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.metricToIncrement");
-                resultAfterReset.should.have.deep.property("customNamespace3.customCategory1.customMeter");
-                resultAfterReset.customNamespace3.customCategory1.customMeter.count.should.equal(0);
-
+                resultAfterReset.should.not.have.deep.property("customNamespace3.customCategory1.customMeter");
             });
         });
     });

@@ -59,7 +59,7 @@ module.exports.addCustomGaugeMetric = function (metricName, metricValue) {
   addMetric(metricName, "Gauge", gaugeFunction);
 }
 
-module.exports.customMeterMetric = function (metricName) {
+module.exports.addCustomMeterMetric = function (metricName) {
   customMetersMetrics.add(metricName);
   let meter = addMetric(metricName, "Meter");
   meter.mark();
@@ -288,7 +288,8 @@ function resetCustomMetrics() {
 function resetCustomMetersMetrics() {
   for (var customMetricName of customMetersMetrics) {
     var metric = addMetric(customMetricName);
-    metric.reset();
+    let customNamespace = customMetricName.substring(0, customMetricName.indexOf("."));
+    resetMetric(customNamespace);
   }
 }
 
