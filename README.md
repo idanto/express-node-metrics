@@ -46,8 +46,10 @@ This package is a platform for collecting metrics of node and express applicatio
     - [Arguments](#arguments-6)
   - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsincrementcustommetricmetricname)
     - [Arguments](#arguments-7)
-  - [express_node_metrics.metrics.incrementCustomMetric(metricName)](#express_node_metricsmetricsdecrementcustommetricmetricname)
+  - [express_node_metrics.metrics.decrementCustomMetric(metricName)](#express_node_metricsmetricsdecrementcustommetricmetricname)
     - [Arguments](#arguments-8)
+  - [express_node_metrics.metrics.customMeterMetric(metricName)](#express_node_metricsmetricscustommetermetricmetricname)
+    - [Arguments](#arguments-9)
 - [How to Use With Docker](#how-to-use-with-docker)
 - [Examples](#examples)
   - [Middleware](#middleware)
@@ -761,6 +763,23 @@ All custom metrics will be aggregated according to the passed structure.
     * <namespace&gt;.<category&gt;.<name&gt; 
     * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
 
+### express_node_metrics.metrics.customMeterMetric(metricName)
+
+This API allows to add a custom Meter metric - things that are measured as events / interval.
+
+The structure is:
+* mean: The average rate since the meter was started/ last reset.
+* count: Count of values added to the meter since was started/ last reset.
+* currentRate: The rate of the meter since the last reset.
+* 1MinuteRate: The rate of the meter biased towards the last 1 minute.
+* 5MinuteRate: The rate of the meter biased towards the last 5 minutes.
+* 15MinuteRate: The rate of the meter biased towards the last 15 minutes.
+
+#### Arguments
+
+* `metricName` (**required**) &ndash; The metric name should be constructed with one of the following structures:
+    * <namespace&gt;.<category&gt;.<name&gt;
+    * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
 
 ## How to Use With Docker
 In order to use the package inside docker you should add node-gyp installation before 'npm insall' command:

@@ -109,6 +109,39 @@ describe('Factory Tests', function () {
         });
     });
 
+    describe('get meter type', function () {
+        it('should return measured of type Counter', function () {
+            //Act
+            var metric = factory.createMetric("meter");
+
+            //Assert
+            should.exist(metric);
+            metric.should.be.an.instanceof(measured.Meter);
+        });
+    });
+
+    describe('get Meter type', function () {
+        it('should return measured of type Counter', function () {
+            //Act
+            var metric = factory.createMetric("Meter");
+
+            //Assert
+            should.exist(metric);
+            metric.should.be.an.instanceof(measured.Meter);
+        });
+    });
+
+    describe('get MetEr type', function () {
+        it('should return measured of type Counter', function () {
+            //Act
+            var metric = factory.createMetric("MetEr");
+
+            //Assert
+            should.exist(metric);
+            metric.should.be.an.instanceof(measured.Meter);
+        });
+    });
+
     describe('get notExists type', function () {
         it('should return null', function () {
             //Act

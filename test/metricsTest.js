@@ -56,6 +56,9 @@ describe('metrics tests', function () {
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
             metricsModel.incrementCustomMetric("customNamespace1.customCategory1.metricToIncrement");
 
+            metricsModel.addCustomMeterMetric("customNamespace3.customCategory1.customMeter");
+            metricsModel.addCustomMeterMetric("customNamespace3.customCategory1.customMeter");
+
             metricsModel.__get__("memwatch").emit("leak", { test1: 1, test2: 2 });
         });
         describe('without reset', function () {
@@ -133,6 +136,8 @@ describe('metrics tests', function () {
 
             it('should have custom metrics', function () {
                 result.should.have.property("customNamespace1");
+                result.should.have.property("customNamespace2");
+                result.should.have.property("customNamespace3");
 
                 result.should.have.deep.property("customNamespace1.customCategory1.customMetricName1");
                 result.should.have.deep.property("customNamespace1.customCategory1.customMetricName2");
@@ -140,6 +145,7 @@ describe('metrics tests', function () {
                 result.should.have.deep.property("customNamespace2.customCategory1.customMetricName1");
                 result.should.have.deep.property("customNamespace1.customCategory1.metricToIncrement");
                 result.should.have.deep.property("customNamespace1.customCategory1.functionMetric");
+                result.should.have.deep.property("customNamespace3.customCategory1.customMeter");
 
                 result.customNamespace1.customCategory1.customMetricName1.should.equal(5);
                 result.customNamespace1.customCategory1.customMetricName2.should.equal(2);
@@ -147,7 +153,7 @@ describe('metrics tests', function () {
                 result.customNamespace2.customCategory1.customMetricName1.should.equal(4);
                 result.customNamespace1.customCategory1.metricToIncrement.should.equal(3);
                 result.customNamespace1.customCategory1.functionMetric.should.equal(process.geteuid());
-
+                result.customNamespace3.customCategory1.customMeter.count.should.equal(2);
             });
 
         });
@@ -164,6 +170,8 @@ describe('metrics tests', function () {
 
             it('should have custom metrics', function () {
                 result.should.have.property("customNamespace1");
+                result.should.have.property("customNamespace2");
+                result.should.have.property("customNamespace3");
 
                 result.should.have.deep.property("customNamespace1.customCategory1.customMetricName1");
                 result.should.have.deep.property("customNamespace1.customCategory1.customMetricName2");
@@ -176,6 +184,7 @@ describe('metrics tests', function () {
                 result.customNamespace1.customCategory2.customMetricName1.should.equal(3);
                 result.customNamespace2.customCategory1.customMetricName1.should.equal(4);
                 result.customNamespace1.customCategory1.metricToIncrement.should.equal(1);
+                result.customNamespace3.customCategory1.customMeter.count.should.equal(2);
 
             });
         })
@@ -247,12 +256,14 @@ describe('metrics tests', function () {
 
             it('should not have custom metrics', function () {
                 resultAfterReset.should.not.have.property("customNamespace1");
+                resultAfterReset.should.not.have.property("customNamespace2");
+                resultAfterReset.should.not.have.property("customNamespace3");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.customMetricName2");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory2.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace2.customCategory1.customMetricName1");
                 resultAfterReset.should.not.have.deep.property("customNamespace1.customCategory1.metricToIncrement");
-
+                resultAfterReset.should.not.have.deep.property("customNamespace3.customCategory1.customMeter");
             });
         });
     });
