@@ -48,7 +48,7 @@ This package is a platform for collecting metrics of node and express applicatio
     - [Arguments](#arguments-7)
   - [express_node_metrics.metrics.decrementCustomMetric(metricName)](#express_node_metricsmetricsdecrementcustommetricmetricname)
     - [Arguments](#arguments-8)
-  - [express_node_metrics.metrics.customMeterMetric(metricName)](#express_node_metricsmetricscustommetermetricmetricname)
+  - [express_node_metrics.metrics.addCustomMeterMetric(metricName)](#express_node_metricsmetricsaddcustommetermetricmetricname)
     - [Arguments](#arguments-9)
 - [How to Use With Docker](#how-to-use-with-docker)
 - [Examples](#examples)
@@ -763,7 +763,7 @@ All custom metrics will be aggregated according to the passed structure.
     * <namespace&gt;.<category&gt;.<name&gt; 
     * <namespace&gt;.<category&gt;.<sub category&gt;.<name&gt;
 
-### express_node_metrics.metrics.customMeterMetric(metricName)
+### express_node_metrics.metrics.addCustomMeterMetric(metricName)
 
 This API allows to add a custom Meter metric - things that are measured as events / interval.
 
