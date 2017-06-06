@@ -5,6 +5,7 @@
 # VS Code
 launch.json
 .vscode
+*history*
 
 # Logs
 logs
