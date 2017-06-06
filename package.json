@@ -49,6 +49,6 @@
     "measured": "^1.1.0",
     "memwatch-next": "^0.3.0",
     "node-schedule": "^1.1.1",
-    "pidusage": "^1.0.7"
+    "pidusage": "^1.1.7"
   }
 }
