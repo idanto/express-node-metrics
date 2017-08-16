@@ -301,7 +301,22 @@ function resetProcessMetrics() {
 }
 
 function resetMetric(namespaceToReset) {
+  stopMeterMetrics(trackedMetrics[namespaceToReset]);
   delete trackedMetrics[namespaceToReset];
+}
+
+function stopMeterMetrics(metric) {
+  for (var subMetricsNames in metric) {
+    if (metric[subMetricsNames] instanceof measured.Meter) {
+      metric[subMetricsNames].end();
+    } else if (metric[subMetricsNames] instanceof measured.Timer) {
+      metric[subMetricsNames]._meter.end();
+    } else if ((metric[subMetricsNames] instanceof measured.Gauge) || (metric[subMetricsNames] instanceof measured.Counter)) {
+      //Do nothing
+    } else if (metric[subMetricsNames] instanceof Object) {
+      stopMeterMetrics(metric[subMetricsNames]);
+    }
+  }
 }
 
 addProcessMetrics();
