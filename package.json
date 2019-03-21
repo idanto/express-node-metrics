@@ -9,7 +9,7 @@
   },
   "scripts": {
     "test": "./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -- --recursive --reporter mochawesome",
-    "test-travis": "./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --recursive --reporter spec --check-leaks test/",
+    "test-travis": "./node_modules/.bin/istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --recursive --reporter spec --check-leaks test/ --exit",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/.bin/coveralls",
     "doctoc": "npm install -g doctoc && doctoc README.md"
   },
@@ -28,13 +28,13 @@
   "devDependencies": {
     "chai": "^3.5.0",
     "connect": "^3.5.0",
-    "coveralls": "^2.11.13",
+    "coveralls": "^3.0.3",
     "express": "^4.14.0",
     "fs": "0.0.1-security",
     "istanbul": "^0.4.5",
     "js-yaml": "^3.7.0",
-    "mocha": "^3.0.2",
-    "mochawesome": "^1.5.2",
+    "mocha": "^6.0.2",
+    "mochawesome": "^3.1.1",
     "node-mocks-http": "^1.5.3",
     "request": "^2.79.0",
     "restify": "^4.3.0",
@@ -47,7 +47,7 @@
     "event-loop-stats": "^1.0.0",
     "gc-stats": "^1.0.2",
     "measured": "^1.1.0",
-    "memwatch-next": "^0.3.0",
+    "node-memwatch": "^1.0.1",
     "node-schedule": "^1.2.4",
     "pidusage": "^1.1.6"
   }

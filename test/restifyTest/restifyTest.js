@@ -21,11 +21,6 @@ server.get('/hello', function (req, res, next) {
     res.send('hello world');
 });
 
-server.listen(serverPort, function () {
-    console.log('%s listening at %s', server.name, server.url);
-});
-
-
 describe('test middleware for restify framework', function () {
     before(function (done) {
         server.listen(serverPort, function () {
