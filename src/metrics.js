@@ -1,14 +1,12 @@
 'use strict';
 var measured = require('measured');
-var stats = measured.createCollection();
 var gc = (require('gc-stats'))();
 var eventLoopStats = require("event-loop-stats");
-var memwatch = require('memwatch-next');
+var memwatch = require('node-memwatch');
 var schedule = require('node-schedule');
 var usage = require('pidusage');
 var metricsFactory = require('./factory');
 var trackedMetrics = {};
-var interval = 1000; // how often to refresh our measurement
 var cpuUsage;
 var gcLastRun;
 
